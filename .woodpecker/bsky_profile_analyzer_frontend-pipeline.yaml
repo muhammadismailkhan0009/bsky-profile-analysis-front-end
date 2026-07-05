@@ -1,0 +1,37 @@
+  when:
+    - event: push
+      branch: main
+  steps:
+    - name: build the docker image from latest commit
+      image: docker:latest
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+      commands:
+        - docker build -t bsky_profile_analyzer_front-end:${CI_COMMIT_SHA} .
+
+    - name: stop and remove old docker image
+      image: docker:latest
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+      commands:
+        # Stop and remove the old application container
+        - docker stop bsky_profile_analyzer_front-end || true
+        - docker rm bsky_profile_analyzer_front-end || true
+
+    - name: deploy the latest build
+      image: docker:latest
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+      when:
+        status:
+          - success
+
+      commands:
+        # Deploy the new container
+        - docker run -d --name bsky_profile_analyzer_front-end -p 3015:3000
+          bsky_profile_analyzer_front-end:${CI_COMMIT_SHA}
+        - |
+          docker images --format "{{.Repository}}:{{.Tag}}" \
+          | grep "^bsky_profile_analyzer_front-end:" \
+          | grep -v "bsky_profile_analyzer_front-end:${CI_COMMIT_SHA}" \
+          | xargs -r docker rmi -f
