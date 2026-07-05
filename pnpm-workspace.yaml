@@ -3,3 +3,11 @@ ignoredBuiltDependencies:
   - unrs-resolver
 
 minimumReleaseAge: 0
+
+packages:
+  - '.'
+
+onlyBuiltDependencies:
+  - '@myriadcodelabs/uiflow'
+  - '@tailwindcss/oxide'
+  
