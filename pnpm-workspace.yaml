@@ -1,6 +1,7 @@
-ignoredBuiltDependencies:
-  - sharp
-  - unrs-resolver
+allowBuilds:
+  '@myriadcodelabs/uiflow': true
+  sharp: true
+  unrs-resolver: true
 
 minimumReleaseAge: 0
 
@@ -9,5 +10,6 @@ packages:
 
 onlyBuiltDependencies:
   - '@myriadcodelabs/uiflow'
+  - sharp
+  - unrs-resolver
   - '@tailwindcss/oxide'
-  
